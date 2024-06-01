@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -13,9 +15,10 @@ import (
 )
 
 type application struct {
-	errorLog *log.Logger
-	infoLog  *log.Logger
-	snippets *models.SnippetModel
+	errorLog      *log.Logger
+	infoLog       *log.Logger
+	snippets      *models.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -33,16 +36,18 @@ func main() {
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime)
 
 	flag.Parse()
+	fmt.Println(*dsn)
 	db, err := openDB(*dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
-
+	templateCache, err := newTemplateCache()
 	defer db.Close()
 	app := application{
-		errorLog: errorLog,
-		infoLog:  infoLog,
-		snippets: &models.SnippetModel{DB: db},
+		errorLog:      errorLog,
+		infoLog:       infoLog,
+		snippets:      &models.SnippetModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	// mux.Handle("/static/", http.StripPrefix("/static", neuter(fileServer)))

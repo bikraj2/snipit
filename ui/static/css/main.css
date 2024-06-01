@@ -126,7 +126,9 @@ nav a.live {
 nav a.live:hover {
     text-decoration: none;
 }
-
+code {
+white-space: pre-wrap;
+}
 nav a.live:after {
     content: '';
     display: block;
