@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/julienschmidt/httprouter"
 	"snipit.bikraj.net/internal/models"
 )
 
@@ -26,8 +27,8 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-
+	params := httprouter.ParamsFromContext(r.Context())
+	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil || id < 1 {
 		app.notFound(w)
 		return
@@ -48,20 +49,7 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.Header().Set("Allow", "POST")
-		w.Header()["X-XSS-Protection"] = []string{"1:mode=block"}
-		app.clientError(w, http.StatusMethodNotAllowed)
-		return
-	}
-	title := "O snai"
-	content := "O snail\nClimbt Mount Fuji,\n But Slowly,slowly!"
-	expires := 7
-
-	id, err := app.snippets.Insert(title, content, expires)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-	http.Redirect(w, r, fmt.Sprintf("/snippet/view?id=%d", id), http.StatusSeeOther)
+	w.Write([]byte("Display the form for creating a new snippet...."))
 }
+
+func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {}
