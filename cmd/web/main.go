@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/go-playground/form/v4"
 	_ "github.com/go-sql-driver/mysql"
 	"snipit.bikraj.net/internal/models"
 )
@@ -19,6 +20,7 @@ type application struct {
 	infoLog       *log.Logger
 	snippets      *models.SnippetModel
 	templateCache map[string]*template.Template
+	formDecoder   *form.Decoder
 }
 
 func main() {
@@ -42,12 +44,14 @@ func main() {
 		errorLog.Fatal(err)
 	}
 	templateCache, err := newTemplateCache()
+	formDecoder := form.NewDecoder()
 	defer db.Close()
 	app := application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
 		snippets:      &models.SnippetModel{DB: db},
 		templateCache: templateCache,
+		formDecoder:   formDecoder,
 	}
 
 	// mux.Handle("/static/", http.StripPrefix("/static", neuter(fileServer)))
