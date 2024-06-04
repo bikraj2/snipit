@@ -10,7 +10,7 @@ type Validator struct {
 }
 
 func (v *Validator) Valid() bool {
-	return len(v.FieldErrors) == 0
+	return len(v.FieldErrors) ==0
 }
 
 func (v *Validator) AddField(key, message string) {
@@ -30,11 +30,11 @@ func (v *Validator) CheckField(ok bool, key, message string) {
 }
 
 func NotBlank(value string) bool {
-	return strings.TrimSpace(value) == ""
+	return strings.TrimSpace(value) != ""
 }
 
 func MaxChars(value string, max int) bool {
-	return utf8.RuneCountInString(value) > max
+	return utf8.RuneCountInString(value) <= max
 }
 
 func PermittedInt(value int, permitttedValues ...int) bool {

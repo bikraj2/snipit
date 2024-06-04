@@ -31,6 +31,7 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 	if !ok {
 		err := fmt.Errorf("template %s does not exit", page)
 		app.serverError(w, err)
+    return 
 	}
 	buf := new(bytes.Buffer)
 	// Two Stage Process
@@ -51,6 +52,7 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 func (app *application) newTemplateData(r *http.Request) *templateData {
 	return &templateData{
 		CurrentYear: time.Now().Year(),
+    Flash: app.sessionManager.PopString(r.Context(),"flash"),
 	}
 }
 
