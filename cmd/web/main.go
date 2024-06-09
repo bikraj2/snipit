@@ -34,7 +34,7 @@ func main() {
 
 	dsn := flag.String(
 		"dsn",
-		" ",
+	"",	
 		"MySQL Data Source name",
 	)
 	// Custom Loggers

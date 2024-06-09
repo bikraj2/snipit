@@ -6,10 +6,14 @@
   <a href="/snippet/create">Create Snippet</a>
   </div>
   <div>
-    <a href="/user/signup">Signup</a>
-    <a href="/user/login">Login</a>
+    {{ if .IsAuthenticated}}
+<input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
     <form action="/user/logout" method="POST">
     <button > Logout</button>  
+      {{else}}
+    <a href="/user/signup">Signup</a>
+    <a href="/user/login">Login</a>
+      {{end}}
     </form>
   </div>
 </nav>
