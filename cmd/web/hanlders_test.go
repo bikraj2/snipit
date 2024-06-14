@@ -53,7 +53,7 @@ func TestPing(t *testing.T) {
 
 	defer ts.Close()
 
-  rs, err := ts.Client().Get(ts.URL + "/ping")
+	rs, err := ts.Client().Get(ts.URL + "/ping")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -66,8 +66,36 @@ func TestPing(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-  bytes.TrimSpace(body)
+	bytes.TrimSpace(body)
 
-  assert.Equal(t, string(body),  "OK")
+	assert.Equal(t, string(body), "OK")
 
+}
+func TestSnippetView(t *testing.T) {
+	app := newTestApplication(t)
+
+	ts := newTestServer(t, app.routes())
+
+	defer ts.Close()
+
+	tests := []struct {
+		name     string
+		urlPath  string
+		wantCode int
+		wantBody string
+	}{
+		{
+			name: "Valid ID", urlPath: "/snippet/view/1", wantCode: http.StatusOK, wantBody: "An old silent pond..."}, {
+			name: "Non-existent ID", urlPath: "/snippet/view/2", wantCode: http.StatusNotFound}, {
+			name: "Negative ID", urlPath: "/snippet/view/-1", wantCode: http.StatusNotFound}, {
+			name: "Decimal ID", urlPath: "/snippet/view/1.23", wantCode: http.StatusNotFound}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			code, _, body := ts.get(t, tt.urlPath)
+			assert.Equal(t, code, tt.wantCode)
+			if tt.wantBody != "" {
+				assert.StringContains(t, body, tt.wantBody)
+			}
+		})
+	}
 }
