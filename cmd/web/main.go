@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"database/sql"
 	"flag"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -13,9 +12,9 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/mysqlstore"
-	"github.com/alexedwards/scs/v2"
+"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
-	_ "github.com/go-sql-driver/mysql"
+  _ "github.com/go-sql-driver/mysql"
 	"snipit.bikraj.net/internal/models"
 )
 
@@ -27,10 +26,12 @@ type application struct {
 	templateCache map[string]*template.Template
 	formDecoder   *form.Decoder
   sessionManager *scs.SessionManager
+  debug  bool
 }
 
 func main() {
 	addr := flag.String("addr", ":4000", "Http Network Address")
+  debug := flag.Bool("debug", false,  "Run the applicaiton in Debug Mode")
 
 	dsn := flag.String(
 		"dsn",
@@ -44,7 +45,6 @@ func main() {
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime)
 
 	flag.Parse()
-	fmt.Println(*dsn)
 	db, err := openDB(*dsn)
 	if err != nil {
 		errorLog.Fatal(err)
@@ -67,6 +67,7 @@ func main() {
 		templateCache: templateCache,
 		formDecoder:   formDecoder,
     sessionManager: sessionManager,
+    debug : *debug,
 	}
 
   tlsConfig := &tls.Config {

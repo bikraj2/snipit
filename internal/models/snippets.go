@@ -24,8 +24,9 @@ type SnippetModelInterface interface {
 }
 type MyTime time.Time
 
-func (t *MyTime) Scan(v interface{}) error {
+func (t *MyTime) Scan(v any) error {
 	// Should be more strictly to check this type.
+  
 	vt, err := time.Parse("15:04:05", string(v.([]byte)))
 	if err != nil {
 		return err
@@ -41,6 +42,7 @@ func (m *SnippetModel) Insert(title string, content string, expires int) (int, e
 	if err != nil {
 		return 0, err
 	}
+  
 	id, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
@@ -78,7 +80,7 @@ func (m *SnippetModel) Latest() ([]*Snippet, error) {
 	snippets := []*Snippet{}
 	for rows.Next() {
 		s := &Snippet{}
-		err = rows.Scan(&s.ID, &s.Title, &s.Content, (*MyTime)(&s.Created), (*MyTime)(&s.Expires))
+		err = rows.Scan(&s.ID, &s.Title, &s.Content, (&s.Created), (&s.Expires))
 		if err != nil {
 			return nil, err
 		}

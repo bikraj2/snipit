@@ -1,0 +1,20 @@
+{{define "title"}} Home{{end}}
+{{define "main"}} 
+<div>
+  <h3>Your Accound</h3>
+{{with .User}}
+  <div>
+    Name  {{ .Name}}   
+  </div>
+  <div>
+    Email   {{.Email}} 
+  </div>
+  <div>
+Joined  {{ .Created}}
+  <div>
+  <div>
+    Password <a href="/account/password/update"></a>
+  </div>
+  {{end}}
+</div>
+{{end}}

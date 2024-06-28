@@ -49,10 +49,9 @@ func Matches(value string,rx *regexp.Regexp) bool {
   return rx.MatchString(value)
 }
 
-func MaxChars(value string, max int) bool {
-	return utf8.RuneCountInString(value) <= max
+func MaxChars(value string, maxchr int) bool {
+	return utf8.RuneCountInString(value) <= maxchr
 }
-
 func PermittedValue [T comparable](value T, permitttedValues ...T) bool {
 	for i := range permitttedValues {
 		if value == permitttedValues[i] {
@@ -60,4 +59,9 @@ func PermittedValue [T comparable](value T, permitttedValues ...T) bool {
 		}
 	}
 	return false
+}
+
+
+func Same [T comparable] (firstValue T, secondValue T) bool {
+  return firstValue == secondValue
 }

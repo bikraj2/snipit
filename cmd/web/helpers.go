@@ -16,7 +16,13 @@ func (app *application) serverError(w http.ResponseWriter, err error) {
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
 
 	app.errorLog.Output(2, trace)
+  if app.debug {
+  fmt.Println("I am ehre")
+	http.Error(w, trace, http.StatusInternalServerError)
+  }else {
+    
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+  }
 }
 
 func (app *application) clientError(w http.ResponseWriter, status int) {
@@ -29,6 +35,7 @@ func (app *application) notFound(w http.ResponseWriter) {
 
 func (app *application) render(w http.ResponseWriter, status int, page string, data *templateData) {
 	ts, ok := app.templateCache[page]
+
 	if !ok {
 		err := fmt.Errorf("template %s does not exit", page)
 		app.serverError(w, err)

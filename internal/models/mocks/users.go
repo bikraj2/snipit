@@ -26,3 +26,12 @@ func (m *UserModel) Exists(id int) (bool, error) {
 		return false, nil
 	}
 }
+func (m *UserModel) ChangePassword(id int, oldPassword, newPassword string) (bool, error) {
+	if id == 1 {
+		if oldPassword != "pa$$word" {
+			return false,models.ErrInvalidCredentials
+		}
+		return false,nil
+	}
+	return false,models.ErrNoRecord
+}
